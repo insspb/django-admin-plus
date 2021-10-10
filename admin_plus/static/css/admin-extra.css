@@ -1,0 +1,5 @@
+#changelist table thead th {
+    padding: 0;
+    vertical-align: middle;
+    white-space: normal;
+}
