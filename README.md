@@ -10,10 +10,11 @@
 
 Django Admin Plus is Django Admin Panel extension application.
 
-## Features
+## Requirements
 
-* Python 3.9+ only
-* Django 3.2+ only
+* Python 3.7+ only
+* Django 3.0+ only
+* No external packages required
 
 ## Installation
 
