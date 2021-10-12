@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as readme_file:
     readme = readme_file.read()
 
 setup(
-    name="admin_plus",
+    name="django-admin-plus",
     description="Django admin panel extension.",
     long_description=readme,
     long_description_content_type="text/markdown",
@@ -47,7 +47,7 @@ setup(
         "django-admin-plus",
     ],
     project_urls={
-        "Source": "",
-        "Changelog": "",
+        "Docs": "https://django-admin-plus.readthedocs.io/",
+        "Source": "https://github.com/insspb/django-admin-plus",
     },
 )
