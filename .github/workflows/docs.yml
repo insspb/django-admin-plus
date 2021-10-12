@@ -13,7 +13,7 @@ jobs:
         with:
           submodules: 'recursive'
 
-      - uses: actions/setup-python@v1
+      - uses: actions/setup-python@v2
         with:
           python-version: "3.7"
 
@@ -21,7 +21,7 @@ jobs:
         with:
           docs-folder: "docs/"
 
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v2
         with:
           name: DocumentationHTML
           path: docs/build/html/
