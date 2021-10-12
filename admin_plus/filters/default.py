@@ -19,9 +19,10 @@ __all__ = [
 import logging
 from typing import Any, Optional, Tuple
 
-from admin_plus.settings import DEFAULT_ADMIN_FILTERS_GROUP
 from django.contrib.admin import filters
 from django.contrib.admin.options import IncorrectLookupParameters
+
+from admin_plus.settings import DEFAULT_ADMIN_FILTERS_GROUP
 
 logger = logging.getLogger(__name__)
 
