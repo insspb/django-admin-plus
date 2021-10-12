@@ -15,8 +15,27 @@ def base_install(session):
 
 
 @nox.session(python=["3.7", "3.8", "3.9", "3.10"])
-def tests(session):
+@nox.parametrize(
+    "django",
+    [
+        "Django>=3.0,<3.1",
+        "Django>=3.1,<3.2",
+        "Django>=3.2,<4.0",
+        "Django>=4.0a1,<5.0",
+        "https://github.com/django/django/archive/main.tar.gz",
+    ],
+    ids=["3.0", "3.1", "3.2", "4.0", "latest"],
+)
+def tests(session, django):
     """Run test suite with pytest."""
+    # Skip tests for unsupported matrix values.
+    if session.python == "3.7" and django in (
+        "Django>=4.0a1,<5.0",
+        "https://github.com/django/django/archive/main.tar.gz",
+    ):
+        session.skip("Unsupported Django version and python version combination.")
+
+    session.install(django)
     session = base_install(session)
     session.run("pytest", "--cov-report=html", "--cov-report=xml")
 
