@@ -17,7 +17,7 @@ setup(
     python_requires=">=3.7",
     platforms="any",
     packages=find_packages(),
-    version="0.1.0",
+    version="0.0.1a1",
     install_requires=["django>=3.0"],
     classifiers=[
         "Development Status :: 1 - Planning",
