@@ -77,8 +77,9 @@ class DateRangeFilter(FieldListFilter):
         self.model_admin = model_admin
         self.form = self.get_form(request)
 
-        custom_title = self._get_custom_title(request, model_admin, field_path)
-        if custom_title:
+        if custom_title := self._get_custom_title(
+            request, model_admin, field_path
+        ):
             self.title = custom_title
 
     def get_timezone(self, request):
@@ -97,10 +98,7 @@ class DateRangeFilter(FieldListFilter):
         default_method_name = f"get_rangefilter_{field_path}_default"
         default_method = getattr(model_admin, default_method_name, None)
 
-        if callable(default_method):
-            return default_method(request)
-
-        return None, None
+        return default_method(request) if callable(default_method) else (None, None)
 
     @staticmethod
     def make_dt_aware(value, timezone):
@@ -114,13 +112,10 @@ class DateRangeFilter(FieldListFilter):
 
     def choices(self, cl):
         yield {
-            # slugify converts any non-unicode characters to empty characters
-            # but system_name is required, if title converts to empty string use id
-            # https://github.com/silentsokolov/django-admin-rangefilter/issues/18
-            "system_name": force_str(
-                slugify(self.title) if slugify(self.title) else id(self.title)
+            "system_name": force_str(slugify(self.title) or id(self.title)),
+            "query_string": cl.get_query_string(
+                {}, remove=self._get_expected_fields()
             ),
-            "query_string": cl.get_query_string({}, remove=self._get_expected_fields()),
         }
 
     def expected_parameters(self):
@@ -128,8 +123,7 @@ class DateRangeFilter(FieldListFilter):
 
     def queryset(self, request, queryset):
         if self.form.is_valid():
-            validated_data = dict(self.form.cleaned_data.items())
-            if validated_data:
+            if validated_data := dict(self.form.cleaned_data.items()):
                 return queryset.filter(
                     **self._make_query_filter(request, validated_data)
                 )
@@ -165,9 +159,7 @@ class DateRangeFilter(FieldListFilter):
     def _get_form_class(self):
         fields = self._get_form_fields()
 
-        form_class = type(
-            str("DateRangeForm"), (forms.BaseForm,), {"base_fields": fields}
-        )
+        form_class = type("DateRangeForm", (forms.BaseForm,), {"base_fields": fields})
 
         # lines below ensure that the js static files are loaded just once
         # even if there is more than one DateRangeFilter in use
@@ -253,8 +245,7 @@ class DateRangeModuleDictGeneration(DictFilter):
         Expected tuple format: filters_dict, filters_group, filter_spec
         """
         if self.form.is_valid():
-            validated_data = dict(self.form.cleaned_data.items())
-            if validated_data:
+            if validated_data := dict(self.form.cleaned_data.items()):
                 filters_dict = self._make_query_filter(request, validated_data)
                 return filters_dict, self.filter_group, self
 

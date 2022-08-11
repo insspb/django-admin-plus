@@ -3,4 +3,4 @@
 
 def tests__some_tests():
     """Fake test."""
-    assert 1 == 1
+    pass

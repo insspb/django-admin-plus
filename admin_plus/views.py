@@ -86,7 +86,7 @@ class ChangeListDictFilters(ChangeList):
 
     def order_filters_groups(self, filters_and_annotations):
         """Combine results from filters groups and order groups output."""
-        filters = dict()
+        filters = {}
         group_dict_default = {"filters": {}, "need_qs_mod": [], "qs_only_filters": []}
 
         for value in filters_and_annotations:

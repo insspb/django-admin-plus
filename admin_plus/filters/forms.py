@@ -21,12 +21,13 @@ class RangeNumericForm(forms.Form):
         self.name = kwargs.pop("name")
         super().__init__(*args, **kwargs)
 
-        self.fields[self.name + "_gte"] = forms.FloatField(
+        self.fields[f"{self.name}_gte"] = forms.FloatField(
             label="",
             required=False,
             widget=forms.NumberInput(attrs={"placeholder": _("From")}),
         )
-        self.fields[self.name + "_lte"] = forms.FloatField(
+
+        self.fields[f"{self.name}_lte"] = forms.FloatField(
             label="",
             required=False,
             widget=forms.NumberInput(attrs={"placeholder": _("To")}),

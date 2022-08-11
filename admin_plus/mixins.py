@@ -46,12 +46,12 @@ class AllowPrefilterQueryMixin(object):
     def changelist_view(self, request, extra_context=None):
         """Make pre-selection in admin panels and reflect them in query string."""
         if self.default_filter:
-            default_filter = True
             query_string: str = request.META.get("QUERY_STRING", "")
             referer: str = request.META.get("HTTP_REFERER", "")
 
-            if query_string or referer.startswith(request.build_absolute_uri()):
-                default_filter = False
+            default_filter = not query_string and not referer.startswith(
+                request.build_absolute_uri()
+            )
 
             if default_filter:
                 current_get_dict = request.GET.copy()
