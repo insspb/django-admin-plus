@@ -82,32 +82,23 @@ class RangeNumericDictFilterMixin(object):
     def _get_filter_dict(self, request, queryset):
         filters = {}
 
-        value_from = self.used_parameters.get(self.parameter_name + "_gte", None)
+        value_from = self.used_parameters.get(f"{self.parameter_name}_gte", None)
         if value_from is not None and value_from != "":
-            filters.update(
-                {
-                    self.parameter_name
-                    + "__gte": self.used_parameters.get(
-                        self.parameter_name + "_gte", None
-                    ),
-                }
+            filters[self.parameter_name + "__gte"] = self.used_parameters.get(
+                f"{self.parameter_name}_gte", None
             )
 
-        value_to = self.used_parameters.get(self.parameter_name + "_lte", None)
+
+        value_to = self.used_parameters.get(f"{self.parameter_name}_lte", None)
         if value_to is not None and value_to != "":
-            filters.update(
-                {
-                    self.parameter_name
-                    + "__lte": self.used_parameters.get(
-                        self.parameter_name + "_lte", None
-                    ),
-                }
+            filters[self.parameter_name + "__lte"] = self.used_parameters.get(
+                f"{self.parameter_name}_lte", None
             )
+
         return filters
 
     def get_filter_dict(self, request, queryset):
-        filters_spec = self._get_filter_dict(request, queryset)
-        if filters_spec:
+        if filters_spec := self._get_filter_dict(request, queryset):
             return filters_spec, self.filter_group, self
 
     def queryset(self, request, queryset):
@@ -128,11 +119,11 @@ class RangeNumericDictFilterMixin(object):
                     data={
                         self.parameter_name
                         + "_gte": self.used_parameters.get(
-                            self.parameter_name + "_gte", None
+                            f"{self.parameter_name}_gte", None
                         ),
                         self.parameter_name
                         + "_lte": self.used_parameters.get(
-                            self.parameter_name + "_lte", None
+                            f"{self.parameter_name}_lte", None
                         ),
                     },
                 ),
@@ -146,13 +137,13 @@ class RangeNumericDictFilter(RangeNumericDictFilterMixin, BaseRangeDictFiler):
     def __init__(self, field, request, params, model, model_admin, field_path):
         """Init by FieldListFilter signature."""
         super().__init__(field, request, params, model, model_admin, field_path)
-        if self.parameter_name + "_gte" in params:
-            value = params.pop(self.parameter_name + "_gte")
-            self.used_parameters[self.parameter_name + "_gte"] = value
+        if f"{self.parameter_name}_gte" in params:
+            value = params.pop(f"{self.parameter_name}_gte")
+            self.used_parameters[f"{self.parameter_name}_gte"] = value
 
-        if self.parameter_name + "_lte" in params:
-            value = params.pop(self.parameter_name + "_lte")
-            self.used_parameters[self.parameter_name + "_lte"] = value
+        if f"{self.parameter_name}_lte" in params:
+            value = params.pop(f"{self.parameter_name}_lte")
+            self.used_parameters[f"{self.parameter_name}_lte"] = value
 
 
 class RangeNumericSimpleDictFilter(RangeNumericDictFilterMixin, SimpleListDictFilter):
@@ -163,13 +154,13 @@ class RangeNumericSimpleDictFilter(RangeNumericDictFilterMixin, SimpleListDictFi
         super().__init__(request, params, model, model_admin)
 
         self.request = request
-        if self.parameter_name + "_gte" in params:
-            value = params.pop(self.parameter_name + "_gte")
-            self.used_parameters[self.parameter_name + "_gte"] = value
+        if f"{self.parameter_name}_gte" in params:
+            value = params.pop(f"{self.parameter_name}_gte")
+            self.used_parameters[f"{self.parameter_name}_gte"] = value
 
-        if self.parameter_name + "_lte" in params:
-            value = params.pop(self.parameter_name + "_lte")
-            self.used_parameters[self.parameter_name + "_lte"] = value
+        if f"{self.parameter_name}_lte" in params:
+            value = params.pop(f"{self.parameter_name}_lte")
+            self.used_parameters[f"{self.parameter_name}_lte"] = value
 
     def has_output(self):
         """Base class required method overwrite with constant value."""
@@ -212,10 +203,10 @@ class SliderNumericDictFilter(RangeNumericDictFilter):
 
         if isinstance(self.field, (FloatField, DecimalField)):
             decimals = self.MAX_DECIMALS
-            step = self.STEP if self.STEP else self._get_min_step(self.MAX_DECIMALS)
+            step = self.STEP or self._get_min_step(self.MAX_DECIMALS)
         else:
             decimals = 0
-            step = self.STEP if self.STEP else 1
+            step = self.STEP or 1
 
         return (
             {
@@ -226,21 +217,21 @@ class SliderNumericDictFilter(RangeNumericDictFilter):
                 "min": min_value,
                 "max": max_value,
                 "value_from": self.used_parameters.get(
-                    self.parameter_name + "_gte", min_value
+                    f"{self.parameter_name}_gte", min_value
                 ),
                 "value_to": self.used_parameters.get(
-                    self.parameter_name + "_lte", max_value
+                    f"{self.parameter_name}_lte", max_value
                 ),
                 "form": SliderNumericForm(
                     name=self.parameter_name,
                     data={
                         self.parameter_name
                         + "_gte": self.used_parameters.get(
-                            self.parameter_name + "_gte", min_value
+                            f"{self.parameter_name}_gte", min_value
                         ),
                         self.parameter_name
                         + "_lte": self.used_parameters.get(
-                            self.parameter_name + "_lte", max_value
+                            f"{self.parameter_name}_lte", max_value
                         ),
                     },
                 ),
@@ -249,4 +240,4 @@ class SliderNumericDictFilter(RangeNumericDictFilter):
 
     def _get_min_step(self, precision):
         result_format = "{{:.{}f}}".format(precision - 1)
-        return float(result_format.format(0) + "1")
+        return float(f"{result_format.format(0)}1")

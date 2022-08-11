@@ -103,16 +103,16 @@ class EmptyFieldListDictFilter(DictFilter, filters.EmptyFieldListFilter):
         if self.lookup_val not in ("0", "1"):
             raise IncorrectLookupParameters
 
-        lookup_condition = dict()
+        lookup_condition = {}
         if self.field.empty_strings_allowed:
             lookup_condition = {self.field_path: ""}
         if self.field.null:
-            lookup_condition.update({"%s__isnull" % self.field_path: True})
+            lookup_condition[f"{self.field_path}__isnull"] = True
 
         if self.lookup_val == "1":
             return lookup_condition, 0, self
         else:
-            return {"%s__isnull" % self.field_path: False}, self.filter_group, self
+            return {f"{self.field_path}__isnull": False}, self.filter_group, self
 
 
 class SimpleListDictFilter(DictFilter, filters.SimpleListFilter):
